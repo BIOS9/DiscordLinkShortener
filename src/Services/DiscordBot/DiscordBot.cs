@@ -93,6 +93,18 @@ public class DiscordBot : IHostedService
         if (fixer == null)
             return;
 
-        await fixer.FixAsync(message, arg);
+        RunFixer(fixer, message, arg);
+    }
+
+    private async void RunFixer(IEmbedFixer fixer, IUserMessage message, IMessage originalMessage)
+    {
+        try
+        {
+            await fixer.FixAsync(message, originalMessage);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while running embed fixer");
+        }
     }
 }
