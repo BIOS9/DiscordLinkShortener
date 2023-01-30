@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using PuppeteerSharp;
 
 namespace DiscordLinkShortener.Services.WebScraper.Scrapers.Aliexpress;
 
@@ -30,7 +31,18 @@ public class AliexpressScraper
 
         var imageElem = await page.QuerySelectorAsync("meta[property='og:image']");
         var imageUrl = (await imageElem.GetPropertyAsync("content")).RemoteObject.Value.ToString();
+
+        var ratingElem = await page.QuerySelectorAsync(".overview-rating-average");
+        var rating = float.Parse((await ratingElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString());
         
-        return new(titleText, imageUrl);
+        var ordersElem = await page.QuerySelectorAsync(".product-reviewer-sold");
+        var ordersText = (await ordersElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+        var orders = int.Parse(ordersText.Substring(0, ordersText.IndexOf(' ')));
+        
+        var ratingsElem = await page.QuerySelectorAsync(".product-reviewer-reviews");
+        var ratingsText = (await ratingsElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+        var ratings = int.Parse(ratingsText.Substring(0, ordersText.IndexOf(' ')));
+
+        return new(titleText, imageUrl, rating, orders, ratings);
     }
 }

@@ -27,20 +27,25 @@ public class AliexpressFixer : IEmbedFixer
 
         string link = message.Content;
         var scrapeData = await _aliexpressScraper.ScrapeItemAsync(link);
-
-
+        
+        string ratingString = string.Concat(Enumerable.Repeat(":star:", (int)Math.Ceiling(scrapeData.Rating))) + "  " +
+                              scrapeData.Rating;
+        
         var embed = new EmbedBuilder()
             .WithTitle(scrapeData.Title)
-            .WithColor(Color.Orange)
+            .WithDescription($"Rating: **{ratingString}**\n" +
+                             $"Orders: **{scrapeData.Orders}**\n" +
+                             $"Reviews: **{scrapeData.Reviews}**\n")
+            .WithColor(new Color(217, 44, 4)) // Ali color :)
             .WithUrl(link)
-            .WithImageUrl(scrapeData.imageUrl)
+            .WithImageUrl(scrapeData.ImageUrl)
             .WithCurrentTimestamp()
             .WithAuthor(x =>
             {
                 x.Name = $"{originalMessage.Author.Username}#{originalMessage.Author.DiscriminatorValue}";
-                x.IconUrl = originalMessage.Author.GetAvatarUrl(ImageFormat.Auto, 256);
+                x.IconUrl = originalMessage.Author.GetAvatarUrl(ImageFormat.Auto, 512);
             })
-            .WithFooter("Footer!");
+            .WithFooter("Aliexpress");
 
         await message.ModifyAsync(msg =>
         {
