@@ -5,4 +5,6 @@ public readonly record struct AliexpressItemScrapeData(
     string ImageUrl,
     float Rating,
     int Orders,
-    int Reviews);
+    int Reviews,
+    string ShopName,
+    string ShopLink);

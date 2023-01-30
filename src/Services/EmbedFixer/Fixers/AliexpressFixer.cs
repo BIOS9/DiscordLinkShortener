@@ -40,7 +40,8 @@ public class AliexpressFixer : IEmbedFixer
             .WithTitle(scrapeData.Title)
             .WithDescription($"Rating: **{ratingString}**\n" +
                              $"Orders: **{scrapeData.Orders}**\n" +
-                             $"Reviews: **{scrapeData.Reviews}**\n")
+                             $"Reviews: **{scrapeData.Reviews}**\n" +
+                             $"Seller: **[{scrapeData.ShopName}]({scrapeData.ShopLink})**")
             .WithColor(new Color(217, 44, 4)) // Ali color :)
             .WithUrl(link)
             .WithImageUrl(scrapeData.ImageUrl)
