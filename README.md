@@ -1,9 +1,5 @@
 # DiscordLinkShortener
 ## How to run
-```
-docker pull ghcr.io/bios9/discordlinkshortener:main
-docker run \
-  -e DiscordBot__Token=<BotToken> \
-  -e DiscordBot__StatusText=<StatusText> \
-  ghcr.io/bios9/discordlinkshortener:main
-```
+
+1. Edit `docker-compose.yml` to include your Discord bot token and other settings.
+2. Run `docker compose up`
