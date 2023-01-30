@@ -15,6 +15,6 @@ public class AliexpressShortener : ILinkShortener
         if (!m.Success)
             throw new ArgumentException("Invalid Aliexpress link.");
 
-        return Task.FromResult($"https://aliexpress.com/item/{m.Groups[1].Value}.html");
+        return Task.FromResult($"https://www.aliexpress.com/item/{m.Groups[1].Value}.html");
     }
 }
