@@ -28,7 +28,8 @@ public class CachedBrowserFactory : IBrowserFactory
         
         return _cachedBrowser = await Puppeteer.LaunchAsync(new LaunchOptions
         {
-            Headless = true
+            Headless = true,
+            Args = new [] { "--no-sandbox" }
         });
     }
 }
