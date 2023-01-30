@@ -9,6 +9,6 @@ public static class ServicesConfiguration
     public static void AddWebScrapers(this IServiceCollection services)
     {
         services.AddTransient<AliexpressScraper>();
-        services.AddSingleton<ChromiumBrowserFactory>();
+        services.AddSingleton<IBrowserFactory, CachedBrowserFactory>();
     }
 }

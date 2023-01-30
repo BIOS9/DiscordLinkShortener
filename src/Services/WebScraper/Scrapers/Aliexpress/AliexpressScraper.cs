@@ -8,9 +8,9 @@ public class AliexpressScraper
     private static readonly Regex _itemLinkRegex = new(@"^https://www.aliexpress.com/item/[0-9]+.html$");
     
     private readonly ILogger<AliexpressScraper> _logger;
-    private readonly ChromiumBrowserFactory _browserFactory;
+    private readonly IBrowserFactory _browserFactory;
     
-    public AliexpressScraper(ILogger<AliexpressScraper> logger, ChromiumBrowserFactory browserFactory)
+    public AliexpressScraper(ILogger<AliexpressScraper> logger, IBrowserFactory browserFactory)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _browserFactory = browserFactory ?? throw new ArgumentNullException(nameof(browserFactory));

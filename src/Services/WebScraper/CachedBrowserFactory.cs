@@ -2,7 +2,7 @@
 
 namespace DiscordLinkShortener.Services.WebScraper;
 
-public class ChromiumBrowserFactory
+public class CachedBrowserFactory : IBrowserFactory
 {
     private IBrowser? _cachedBrowser = null;
     
