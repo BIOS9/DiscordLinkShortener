@@ -9,10 +9,12 @@ public class AliexpressSmallShortener : ILinkShortener
     private static readonly Regex _aliLinkRegex =
         new(@"^https?:\/\/a.aliexpress.com\/[_a-z0-9]+$", RegexOptions.IgnoreCase);
 
+    private readonly AliexpressShortener _aliexpressShortener;
     private readonly ILogger<AliexpressSmallShortener> _logger;
 
-    public AliexpressSmallShortener(ILogger<AliexpressSmallShortener> logger)
+    public AliexpressSmallShortener(AliexpressShortener aliexpressShortener, ILogger<AliexpressSmallShortener> logger)
     {
+        _aliexpressShortener = aliexpressShortener ?? throw new ArgumentNullException(nameof(aliexpressShortener));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -26,7 +28,7 @@ public class AliexpressSmallShortener : ILinkShortener
         if (!m.Success)
             throw new ArgumentException("Invalid small Aliexpress link");
 
-        var response = await new HttpClient().GetAsync(link);
+        var response = await new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }).GetAsync(link);
         if (response.StatusCode != HttpStatusCode.Found)
         {
             _logger.LogWarning("Was expecting 302 redirect for small Aliexpress link, got {Code}", response.StatusCode);
@@ -39,6 +41,7 @@ public class AliexpressSmallShortener : ILinkShortener
             throw new ArgumentException("Missing location header for small Aliexpress link");
         }
 
-        return response.Headers.Location.ToString();
+        string longAliLink = response.Headers.Location.ToString();
+        return await _aliexpressShortener.ShortenAsync(longAliLink);
     }
 }
