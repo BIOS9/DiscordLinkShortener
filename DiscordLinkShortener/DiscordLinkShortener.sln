@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordLinkShortener", "DiscordLinkShortener\DiscordLinkShortener.csproj", "{8C41B31F-B1F6-4612-93F6-6524D755BCE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordLinkShortener", "DiscordLinkShortener.csproj", "{8C41B31F-B1F6-4612-93F6-6524D755BCE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
