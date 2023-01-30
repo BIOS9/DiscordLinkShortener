@@ -71,11 +71,14 @@ public class DiscordBot : IHostedService
     
     private async Task DiscordClientOnMessageReceived(SocketMessage arg)
     {
+        if (arg.Author.Id == _discordClient.CurrentUser.Id)
+            return;
+
         if (!_linkRegex.IsMatch(arg.Content)) // Ensure that message is just a link on its own
             return;
 
         var shortener = _linkShorteners.FirstOrDefault(x => x.CanShorten(arg.Content));
-        if(shortener == null)
+        if (shortener == null)
             return;
 
         string shortLink = await shortener.ShortenAsync(arg.Content);
