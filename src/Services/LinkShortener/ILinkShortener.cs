@@ -2,5 +2,6 @@
 
 public interface ILinkShortener
 {
-    bool TryShorten(string link, out string shortLink);
+    bool CanShorten(string link);
+    Task<string> Shorten(string link);
 }
