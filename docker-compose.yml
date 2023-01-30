@@ -1,0 +1,11 @@
+---
+version: "2.1"
+services:
+  linkshortener:
+    image: ghcr.io/bios9/discordlinkshortener:main
+    container_name: linkshortener-dev
+    environment:
+      - DiscordBot__Token=<discord_bot_token>
+      - DiscordBot__StatusText=<discord_bot_status>
+      - Serilog__MinimumLevel=Information 
+    restart: unless-stopped
