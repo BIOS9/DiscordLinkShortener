@@ -18,7 +18,7 @@ public class AliexpressScraper
 
     public async Task<AliexpressItemScrapeData> ScrapeItemAsync(string itemLink)
     {
-        _logger.LogInformation("Scraping Aliexpress listing");
+        _logger.LogDebug("Scraping Aliexpress listing");
         
         if (!_itemLinkRegex.IsMatch(itemLink))
             throw new ArgumentException("Invalid Aliexpress item link.");
@@ -27,6 +27,8 @@ public class AliexpressScraper
         var page = await browser.NewPageAsync();
         var response = await page.GoToAsync(itemLink);
 
+        _logger.LogDebug("Aliexpress listing page loaded");
+        
         if (!response.Ok)
             throw new Exception("Failed to load Aliexpress item page.");
 
@@ -47,6 +49,8 @@ public class AliexpressScraper
         var ratingsText = (await ratingsElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
         var ratings = int.Parse(ratingsText.Substring(0, ordersText.IndexOf(' ')));
 
+        _logger.LogDebug("Scrape complete");
+        
         return new(titleText, imageUrl, rating, orders, ratings);
     }
 }
