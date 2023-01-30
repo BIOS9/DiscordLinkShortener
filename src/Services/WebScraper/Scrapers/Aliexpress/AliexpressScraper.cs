@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using PuppeteerSharp;
+using Microsoft.Extensions.Logging;
 
 namespace DiscordLinkShortener.Services.WebScraper.Scrapers.Aliexpress;
 
@@ -7,15 +7,19 @@ public class AliexpressScraper
 {
     private static readonly Regex _itemLinkRegex = new(@"^https://www.aliexpress.com/item/[0-9]+.html$");
     
+    private readonly ILogger<AliexpressScraper> _logger;
     private readonly ChromiumBrowserFactory _browserFactory;
     
-    public AliexpressScraper(ChromiumBrowserFactory browserFactory)
+    public AliexpressScraper(ILogger<AliexpressScraper> logger, ChromiumBrowserFactory browserFactory)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _browserFactory = browserFactory ?? throw new ArgumentNullException(nameof(browserFactory));
     }
 
     public async Task<AliexpressItemScrapeData> ScrapeItemAsync(string itemLink)
     {
+        _logger.LogInformation("Scraping Aliexpress listing");
+        
         if (!_itemLinkRegex.IsMatch(itemLink))
             throw new ArgumentException("Invalid Aliexpress item link.");
 

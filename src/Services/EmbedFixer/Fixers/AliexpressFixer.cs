@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Rest;
 using DiscordLinkShortener.Services.WebScraper.Scrapers.Aliexpress;
+using Microsoft.Extensions.Logging;
 
 namespace DiscordLinkShortener.Services.EmbedFixer.Fixers;
 
@@ -9,9 +10,11 @@ public class AliexpressFixer : IEmbedFixer
 {
     private static readonly Regex _itemLinkRegex = new(@"^https://www.aliexpress.com/item/[0-9]+.html$");
     private readonly AliexpressScraper _aliexpressScraper;
-
-    public AliexpressFixer(AliexpressScraper aliexpressScraper)
+    private readonly ILogger<AliexpressFixer> _logger;
+    
+    public AliexpressFixer(ILogger<AliexpressFixer> logger, AliexpressScraper aliexpressScraper)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _aliexpressScraper = aliexpressScraper ?? throw new ArgumentNullException(nameof(aliexpressScraper));
     }
 
@@ -22,6 +25,8 @@ public class AliexpressFixer : IEmbedFixer
 
     public async Task FixAsync(IUserMessage message, IMessage originalMessage)
     {
+        _logger.LogInformation("Fixing Aliexpress embed");
+        
         if(!CanFix(message))
             throw new ArgumentException("Invalid Aliexpress link.");
 
