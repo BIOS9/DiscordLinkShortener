@@ -15,7 +15,7 @@ public class DiscordBot : IHostedService
     private readonly DiscordSocketClient _discordClient;
     private readonly DiscordBotOptions _botOptions;
     private readonly ILogger<DiscordBot> _logger;
-    private readonly Collection<ILinkShortener> _linkShorteners;
+    private readonly IEnumerable<ILinkShortener> _linkShorteners;
 
     private static readonly Regex _linkRegex = new(@"^https?:\/\/[^\s]+$", RegexOptions.IgnoreCase);
     
@@ -35,7 +35,7 @@ public class DiscordBot : IHostedService
         DiscordSocketClient discordClient,
         IOptions<DiscordBotOptions> botOptions,
         ILogger<DiscordBot> logger,
-        Collection<ILinkShortener> linkShorteners)
+        IEnumerable<ILinkShortener> linkShorteners)
     {
         _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
         _botOptions = botOptions?.Value ?? throw new ArgumentNullException(nameof(botOptions));
