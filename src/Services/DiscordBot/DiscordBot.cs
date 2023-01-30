@@ -56,7 +56,7 @@ public class DiscordBot : IHostedService
     private Task DiscordClientOnLog(LogMessage arg)
     {
         LogLevel level = _logLevelMap[arg.Severity];
-        _logger.Log(level, "{source} {message}", arg.Source, arg.Message, arg.Exception);
+        _logger.Log(level, arg.Exception, "{source} {message}", arg.Source, arg.Message);
         return Task.CompletedTask;
     }
 }
