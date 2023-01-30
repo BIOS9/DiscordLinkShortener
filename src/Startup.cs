@@ -1,6 +1,7 @@
 ﻿using DiscordLinkShortener.Services.DiscordBot.Helpers;
 using DiscordLinkShortener.Services.EmbedFixer.Helpers;
 using DiscordLinkShortener.Services.LinkShortener.Helpers;
+using DiscordLinkShortener.Services.WebScraper.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -53,5 +54,6 @@ public class Startup : IHostedService
         services.AddDiscordBot(_configuration);
         services.AddLinkShorteners();
         services.AddEmbedFixers();
+        services.AddWebScrapers();
     }
 }

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Discord;
 using Discord.WebSocket;
 using DiscordLinkShortener.Services.DiscordBot.Configuration;
+using DiscordLinkShortener.Services.EmbedFixer;
 using DiscordLinkShortener.Services.LinkShortener;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ public class DiscordBot : IHostedService
     private readonly DiscordBotOptions _botOptions;
     private readonly ILogger<DiscordBot> _logger;
     private readonly IEnumerable<ILinkShortener> _linkShorteners;
+    private readonly IEnumerable<IEmbedFixer> _embedFixers;
 
     private static readonly Regex _linkRegex = new(@"^https?:\/\/[^\s]+$", RegexOptions.IgnoreCase);
     
@@ -35,12 +37,14 @@ public class DiscordBot : IHostedService
         DiscordSocketClient discordClient,
         IOptions<DiscordBotOptions> botOptions,
         ILogger<DiscordBot> logger,
-        IEnumerable<ILinkShortener> linkShorteners)
+        IEnumerable<ILinkShortener> linkShorteners,
+        IEnumerable<IEmbedFixer> embedFixers)
     {
         _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
         _botOptions = botOptions?.Value ?? throw new ArgumentNullException(nameof(botOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _linkShorteners = linkShorteners ?? throw new ArgumentNullException(nameof(linkShorteners));;
+        _linkShorteners = linkShorteners ?? throw new ArgumentNullException(nameof(linkShorteners));
+        _embedFixers = embedFixers ?? throw new ArgumentNullException(nameof(embedFixers));
 
         _discordClient.Log += DiscordClientOnLog;
         _discordClient.MessageReceived += DiscordClientOnMessageReceived;
@@ -83,6 +87,12 @@ public class DiscordBot : IHostedService
 
         string shortLink = await shortener.ShortenAsync(arg.Content);
         await arg.DeleteAsync();
-        await arg.Channel.SendMessageAsync(shortLink);
+        var message = await arg.Channel.SendMessageAsync(shortLink);
+        
+        var fixer = _embedFixers.FirstOrDefault(x => x.CanFix(message));
+        if (fixer == null)
+            return;
+
+        await fixer.FixAsync(message);
     }
 }
