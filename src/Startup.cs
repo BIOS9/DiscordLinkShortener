@@ -1,4 +1,5 @@
 ﻿using DiscordLinkShortener.Services.DiscordBot.Helpers;
+using DiscordLinkShortener.Services.LinkShortener.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,5 +50,6 @@ public class Startup : IHostedService
     {
         services.AddLogging(x => x.AddSerilog());
         services.AddDiscordBot(_configuration);
+        services.AddLinkShorteners();
     }
 }
