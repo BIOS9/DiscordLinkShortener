@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["DiscordLinkShortener/DiscordLinkShortener.csproj", "DiscordLinkShortener/"]
-RUN dotnet restore "DiscordLinkShortener/DiscordLinkShortener.csproj"
+COPY ["src/DiscordLinkShortener.csproj", "src/"]
+RUN dotnet restore "DiscordLinkShortener.csproj"
 COPY . .
-WORKDIR "/src/DiscordLinkShortener"
+WORKDIR "/src/"
 RUN dotnet build "DiscordLinkShortener.csproj" -c Release -o /app/build
 
 FROM build AS publish
