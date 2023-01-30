@@ -1,6 +1,9 @@
-﻿using Discord;
+﻿using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
+using Discord;
 using Discord.WebSocket;
 using DiscordLinkShortener.Services.DiscordBot.Configuration;
+using DiscordLinkShortener.Services.LinkShortener;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,7 +15,10 @@ public class DiscordBot : IHostedService
     private readonly DiscordSocketClient _discordClient;
     private readonly DiscordBotOptions _botOptions;
     private readonly ILogger<DiscordBot> _logger;
+    private readonly Collection<ILinkShortener> _linkShorteners;
 
+    private static readonly Regex _linkRegex = new(@"^https?:\/\/[^\s]+$", RegexOptions.IgnoreCase);
+    
     private readonly IReadOnlyDictionary<LogSeverity, LogLevel>
         _logLevelMap = // Maps Discord.NET logging levels to Microsoft extensions logging levels.
             new Dictionary<LogSeverity, LogLevel>
@@ -28,13 +34,16 @@ public class DiscordBot : IHostedService
     public DiscordBot(
         DiscordSocketClient discordClient,
         IOptions<DiscordBotOptions> botOptions,
-        ILogger<DiscordBot> logger)
+        ILogger<DiscordBot> logger,
+        Collection<ILinkShortener> linkShorteners)
     {
         _discordClient = discordClient ?? throw new ArgumentNullException(nameof(discordClient));
         _botOptions = botOptions?.Value ?? throw new ArgumentNullException(nameof(botOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _linkShorteners = linkShorteners ?? throw new ArgumentNullException(nameof(linkShorteners));;
 
         _discordClient.Log += DiscordClientOnLog;
+        _discordClient.MessageReceived += DiscordClientOnMessageReceived;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -58,5 +67,19 @@ public class DiscordBot : IHostedService
         LogLevel level = _logLevelMap[arg.Severity];
         _logger.Log(level, arg.Exception, "{source} {message}", arg.Source, arg.Message);
         return Task.CompletedTask;
+    }
+    
+    private async Task DiscordClientOnMessageReceived(SocketMessage arg)
+    {
+        if (!_linkRegex.IsMatch(arg.Content)) // Ensure that message is just a link on its own
+            return;
+
+        var shortener = _linkShorteners.FirstOrDefault(x => x.CanShorten(arg.Content));
+        if(shortener == null)
+            return;
+
+        string shortLink = await shortener.ShortenAsync(arg.Content);
+        await arg.DeleteAsync();
+        await arg.Channel.SendMessageAsync(shortLink);
     }
 }
