@@ -28,6 +28,9 @@ public class AliexpressScraper
         var titleElem = await page.QuerySelectorAsync(".product-title-text");
         var titleText = (await titleElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
 
-        return new(titleText);
+        var imageElem = await page.QuerySelectorAsync("meta[property='og:image']");
+        var imageUrl = (await imageElem.GetPropertyAsync("content")).RemoteObject.Value.ToString();
+        
+        return new(titleText, imageUrl);
     }
 }
