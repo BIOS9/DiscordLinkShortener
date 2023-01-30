@@ -93,6 +93,6 @@ public class DiscordBot : IHostedService
         if (fixer == null)
             return;
 
-        await fixer.FixAsync(message);
+        await fixer.FixAsync(message, arg);
     }
 }

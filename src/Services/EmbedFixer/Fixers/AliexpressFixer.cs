@@ -20,16 +20,32 @@ public class AliexpressFixer : IEmbedFixer
         return _itemLinkRegex.IsMatch(message.Content);
     }
 
-    public async Task FixAsync(IUserMessage message)
+    public async Task FixAsync(IUserMessage message, IMessage originalMessage)
     {
         if(!CanFix(message))
             throw new ArgumentException("Invalid Aliexpress link.");
 
         string link = message.Content;
         var scrapeData = await _aliexpressScraper.ScrapeItemAsync(link);
-        message.ModifyAsync(msg =>
+
+
+        var embed = new EmbedBuilder()
+            .WithTitle(scrapeData.Title)
+            .WithColor(Color.Orange)
+            .WithUrl(link)
+            .WithImageUrl(scrapeData.imageUrl)
+            .WithCurrentTimestamp()
+            .WithAuthor(x =>
+            {
+                x.Name = $"{originalMessage.Author.Username}#{originalMessage.Author.DiscriminatorValue}";
+                x.IconUrl = originalMessage.Author.GetAvatarUrl(ImageFormat.Auto, 256);
+            })
+            .WithFooter("Footer!");
+
+        await message.ModifyAsync(msg =>
         {
-            msg.Content = link + "\n" + scrapeData.Title;
+            msg.Embed = embed.Build();
+            msg.Content = string.Empty;
         });
     }
 }
