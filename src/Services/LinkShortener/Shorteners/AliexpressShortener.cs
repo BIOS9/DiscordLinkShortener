@@ -7,7 +7,7 @@ public class AliexpressShortener : ILinkShortener
         throw new NotImplementedException();
     }
 
-    public Task<string> Shorten(string link)
+    public Task<string> ShortenAsync(string link)
     {
         throw new NotImplementedException();
     }
