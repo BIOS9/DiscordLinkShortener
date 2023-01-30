@@ -17,9 +17,12 @@ public static class ServicesConfiguration
         services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
         {
             LogLevel = LogSeverity.Verbose, // Tell the logger to give Verbose amount of info
-            GatewayIntents = GatewayIntents.GuildMembers | GatewayIntents.AllUnprivileged,
+            GatewayIntents = 
+                GatewayIntents.Guilds |
+                GatewayIntents.MessageContent |
+                GatewayIntents.GuildMessages,
             AlwaysDownloadUsers = true,
-            DefaultRetryMode = RetryMode.AlwaysFail
+            DefaultRetryMode = RetryMode.AlwaysRetry
         }));
         services.AddSingleton<IHostedService, DiscordBot>(); // The IHostedService interface is convenient for this use since it has start and stop methods.
     }
