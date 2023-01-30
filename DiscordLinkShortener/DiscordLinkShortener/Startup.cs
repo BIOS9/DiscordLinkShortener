@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using DiscordLinkShortener.Services.DiscordBot.Helpers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -47,5 +48,6 @@ public class Startup : IHostedService
     private void ConfigureServices(IServiceCollection services)
     {
         services.AddLogging(x => x.AddSerilog());
+        services.AddDiscordBot(_configuration);
     }
 }
