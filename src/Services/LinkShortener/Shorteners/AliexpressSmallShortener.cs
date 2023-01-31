@@ -7,7 +7,7 @@ namespace DiscordLinkShortener.Services.LinkShortener.Shorteners;
 public class AliexpressSmallShortener : ILinkShortener
 {
     private static readonly Regex _aliLinkRegex =
-        new(@"^https?:\/\/a.aliexpress.com\/[_a-z0-9]+$", RegexOptions.IgnoreCase);
+        new(@"(https?:\/\/a.aliexpress.com\/[_a-z0-9]+)", RegexOptions.IgnoreCase);
 
     private readonly AliexpressShortener _aliexpressShortener;
     private readonly ILogger<AliexpressSmallShortener> _logger;
@@ -28,7 +28,7 @@ public class AliexpressSmallShortener : ILinkShortener
         if (!m.Success)
             throw new ArgumentException("Invalid small Aliexpress link");
 
-        var response = await new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }).GetAsync(link);
+        var response = await new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }).GetAsync(m.Groups[1].ToString());
         if (response.StatusCode != HttpStatusCode.Found)
         {
             _logger.LogWarning("Was expecting 302 redirect for small Aliexpress link, got {Code}", response.StatusCode);

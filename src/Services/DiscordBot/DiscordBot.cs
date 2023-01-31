@@ -19,8 +19,6 @@ public class DiscordBot : IHostedService
     private readonly IEnumerable<ILinkShortener> _linkShorteners;
     private readonly IEnumerable<IEmbedFixer> _embedFixers;
 
-    private static readonly Regex _linkRegex = new(@"^https?:\/\/[^\s]+$", RegexOptions.IgnoreCase);
-    
     private readonly IReadOnlyDictionary<LogSeverity, LogLevel>
         _logLevelMap = // Maps Discord.NET logging levels to Microsoft extensions logging levels.
             new Dictionary<LogSeverity, LogLevel>
@@ -76,9 +74,6 @@ public class DiscordBot : IHostedService
     private async Task DiscordClientOnMessageReceived(SocketMessage arg)
     {
         if (arg.Author.Id == _discordClient.CurrentUser.Id)
-            return;
-
-        if (!_linkRegex.IsMatch(arg.Content)) // Ensure that message is just a link on its own
             return;
 
         var shortener = _linkShorteners.FirstOrDefault(x => x.CanShorten(arg.Content));
