@@ -2,7 +2,7 @@
 version: "2.1"
 services:
   linkshortener:
-    image: ghcr.io/bios9/discordlinkshortener:main
+    image: ghcr.io/bios9/discordlinkshortener:latest
     container_name: linkshortener-dev
     environment:
       - DiscordBot__Token=<discord_bot_token>
