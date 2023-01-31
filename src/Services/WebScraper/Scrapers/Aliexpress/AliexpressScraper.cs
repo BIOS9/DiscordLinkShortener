@@ -39,15 +39,27 @@ public class AliexpressScraper
         var imageUrl = (await imageElem.GetPropertyAsync("content")).RemoteObject.Value.ToString();
 
         var ratingElem = await page.QuerySelectorAsync(".overview-rating-average");
-        var rating = float.Parse((await ratingElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString());
-        
+        float rating = 0;
+        if (ratingElem != null)
+        {
+            rating = float.Parse((await ratingElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString());
+        }
+
         var ordersElem = await page.QuerySelectorAsync(".product-reviewer-sold");
-        var ordersText = (await ordersElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
-        var orders = int.Parse(ordersText.Substring(0, ordersText.IndexOf(' ')));
-        
-        var ratingsElem = await page.QuerySelectorAsync(".product-reviewer-reviews");
-        var ratingsText = (await ratingsElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
-        var ratings = int.Parse(ratingsText.Substring(0, ordersText.IndexOf(' ')));
+        int orders = 0;
+        if (ordersElem != null)
+        {
+            var ordersText = (await ordersElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+            orders = int.Parse(ordersText.Substring(0, ordersText.IndexOf(' ')));
+        }
+
+        var reviewsElem = await page.QuerySelectorAsync(".product-reviewer-reviews");
+        int reviews = 0;
+        if (reviewsElem != null)
+        {
+            var reviewsText = (await reviewsElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+            reviews = int.Parse(reviewsText.Substring(0, reviewsText.IndexOf(' ')));
+        }
 
         var shopNameElem = await page.QuerySelectorAsync(".shop-name > a");
         var shopNameText = (await shopNameElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
@@ -55,6 +67,6 @@ public class AliexpressScraper
         
         _logger.LogDebug("Scrape complete");
         
-        return new(titleText, imageUrl, rating, orders, ratings, shopNameText, shopLink);
+        return new(titleText, imageUrl, rating, orders, reviews, shopNameText, shopLink);
     }
 }
