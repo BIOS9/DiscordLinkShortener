@@ -64,9 +64,11 @@ public class AliexpressScraper
         var shopNameElem = await page.QuerySelectorAsync(".shop-name > a");
         var shopNameText = (await shopNameElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
         var shopLink = (await shopNameElem.GetPropertyAsync("href")).RemoteObject.Value.ToString();
-        
+
+        var items = await page.QuerySelectorAllAsync(".sku-property-list > li");
+
         _logger.LogDebug("Scrape complete");
         
-        return new(titleText, imageUrl, rating, orders, reviews, shopNameText, shopLink);
+        return new(titleText, imageUrl, rating, orders, reviews, shopNameText, shopLink, items.Length);
     }
 }
