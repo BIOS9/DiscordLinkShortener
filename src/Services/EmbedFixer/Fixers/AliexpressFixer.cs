@@ -38,7 +38,9 @@ public class AliexpressFixer : IEmbedFixer
         
         var embed = new EmbedBuilder()
             .WithTitle(scrapeData.Title)
-            .WithDescription($"Rating: **{ratingString}**\n" +
+            .WithDescription((scrapeData.Price != null ? $"Price: **{scrapeData.Price}**\n" : "") +
+                             (scrapeData.Shipping != null ? $"Shipping: **{scrapeData.Shipping}**\n" : "") +
+                             $"Rating: **{ratingString}**\n" +
                              $"Orders: **{scrapeData.Orders}**\n" +
                              $"Reviews: **{scrapeData.Reviews}**\n" +
                              $"Seller: **[{scrapeData.ShopName}]({scrapeData.ShopLink})**")

@@ -67,8 +67,23 @@ public class AliexpressScraper
 
         var items = await page.QuerySelectorAllAsync(".sku-property-list > li");
 
+        
+        var priceElem = await page.QuerySelectorAsync(".product-price-value");
+        string? price = null;
+        if (priceElem != null && items.Length == 0)
+        {
+            price = (await priceElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+        }
+
+        var shippingElem = await page.QuerySelectorAsync(".dynamic-shipping-line > span > span > strong");
+        string? shipping = null;
+        if (items.Length == 0)
+        {
+            shipping = (await shippingElem.GetPropertyAsync("innerText")).RemoteObject.Value.ToString();
+        }
+
         _logger.LogDebug("Scrape complete");
         
-        return new(titleText, imageUrl, rating, orders, reviews, shopNameText, shopLink, items.Length);
+        return new(titleText, imageUrl, rating, orders, reviews, shopNameText, shopLink, price, shipping);
     }
 }
