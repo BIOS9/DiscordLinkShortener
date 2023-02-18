@@ -7,11 +7,9 @@
   "timezone": "Pacific/Auckland",
   "packageRules": [
     {
-      "matchPackagePrefixes": ["@types/"],
-      "automerge": true,
-      "major": {
-        "automerge": false
-      }
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
     },
     {
       "matchDepTypes": ["devDependencies"],
