@@ -24,11 +24,13 @@
         "lint",
         "prettier"
       ],
-      "automerge": true
+      "automerge": true,
+      "automergeType": "branch"
     }
   ],
   "lockFileMaintenance": {
     "enabled": true,
-    "automerge": true
+    "automerge": true,
+    "automergeType": "branch"
   }
 }
