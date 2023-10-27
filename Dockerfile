@@ -19,7 +19,7 @@ ENV PUPPETEER_EXECUTABLE_PATH "/usr/bin/google-chrome-stable"
 #END PUPPETEER RECIPE
 #####################
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY src/* ./
 RUN dotnet restore DiscordLinkShortener.csproj
